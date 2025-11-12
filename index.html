@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Laboratorium Fisika Teori & Komputasi - Universitas Hasanuddin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root{
+  --cream:#F6EEE6;
+  --sand:#E9DCC9;
+  --accent:#C9A26B;
+  --dark:#2E2E2E;
+  --muted:#6B6B6B;
+  --glass:rgba(255,255,255,0.65);
+  --radius:16px;
+  --shadow:0 8px 22px rgba(0,0,0,0.08);
+}
+[data-theme="dark"] {
+  --cream:#1e1e1e;
+  --sand:#2c2c2c;
+  --accent:#D7BFA6;
+  --dark:#f5f5f5;
+  --muted:#aaaaaa;
+  --glass:rgba(30,30,30,0.8);
+}
+*{box-sizing:border-box;transition:background .3s,color .3s}
+body{
+  margin:0;font-family:Inter,system-ui;
+  background:linear-gradient(180deg,var(--cream),#fff);
+  color:var(--dark);line-height:1.5;
+}
+.container{max-width:1150px;margin:auto;padding:22px}
+header{
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;
+  padding:18px;border-radius:20px;
+  background:var(--glass);backdrop-filter:blur(8px);
+  box-shadow:var(--shadow);
+  animation:fadeIn .8s ease;
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.logo{width:60px;height:60px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--sand));
+  display:flex;align-items:center;justify-content:center;font-family:Montserrat;font-weight:700;font-size:20px;color:#fff;
+  box-shadow:0 6px 14px rgba(0,0,0,0.1);
+}
+nav{display:flex;gap:8px;flex-wrap:wrap}
+.navbtn{padding:10px 16px;border:0;border-radius:10px;cursor:pointer;font-weight:600;
+  background:transparent;color:var(--dark);transition:all .2s;
+}
+.navbtn:hover{transform:translateY(-2px);background:var(--sand);}
+.navbtn.active{background:var(--accent);color:#fff;box-shadow:var(--shadow);}
+.theme-toggle{
+  cursor:pointer;border:0;border-radius:50%;padding:8px;font-size:18px;
+  background:var(--sand);transition:.3s;
+}
+.theme-toggle:hover{transform:rotate(20deg)}
+.card{
+  background:var(--glass);
+  box-shadow:var(--shadow);
+  border-radius:var(--radius);
+  padding:22px;
+  animation:fadeSlide .5s ease;
+}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+.btn{padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:600}
+.btn.primary{background:var(--accent);color:#fff}
+.btn.primary:hover{transform:scale(1.05)}
+.btn.ghost{background:transparent;border:1px solid var(--sand);color:var(--dark)}
+.member-card{display:flex;align-items:center;justify-content:space-between;padding:10px;border-radius:14px;
+  background:linear-gradient(180deg,#fff,var(--sand));box-shadow:var(--shadow);}
+.member-info{display:flex;gap:12px;align-items:center}
+.avatar{width:72px;height:72px;border-radius:12px;object-fit:cover}
+.search-box{margin-bottom:12px}
+.search-input{width:100%;padding:10px;border-radius:10px;border:1px solid #ddd;}
+footer{text-align:center;font-size:13px;color:var(--muted);margin-top:30px}
+.notice{position:fixed;bottom:20px;right:20px;background:var(--accent);color:#fff;
+  padding:10px 14px;border-radius:10px;opacity:0;transition:.4s;}
+.notice.show{opacity:1}
+.gallery img{cursor:pointer;transition:.3s;border-radius:10px}
+.gallery img:hover{transform:scale(1.03)}
+.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);
+display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:.3s;}
+.modal.show{opacity:1;pointer-events:auto;}
+.modal img{max-width:90%;max-height:85%;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.4)}
+canvas{margin-top:16px}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="brand" style="display:flex;align-items:center;gap:12px">
+      <div class="logo">FH</div>
+      <div>
+        <h2 style="margin:0;font-family:Montserrat">Lab Fisika Teori & Komputasi</h2>
+        <small style="color:var(--muted)">Universitas Hasanuddin — Teori • Simulasi • Komputasi</small>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <nav>
+        <button class="navbtn active" data-target="about">Info</button>
+        <button class="navbtn" data-target="members">Anggota</button>
+        <button class="navbtn" data-target="add">Tambah</button>
+        <button class="navbtn" data-target="research">Penelitian</button>
+      </nav>
+      <button id="themeToggle" class="theme-toggle" title="Ganti tema">🌙</button>
+    </div>
+  </header>
+
+  <main style="margin-top:18px">
+    <section id="about" class="card">
+      <h3>Selamat datang di Lab</h3>
+      <p>Laboratorium Fisika Teori & Komputasi — fokus pada penelitian teori, simulasi numerik, dan pemodelan komputasi. Situs ini memuat informasi anggota, galeri, dan proyek penelitian aktif.</p>
+      <canvas id="roleChart" width="400" height="200"></canvas>
+    </section>
+
+    <section id="members" class="card" style="display:none">
+      <h3>Daftar Anggota</h3>
+      <div class="search-box">
+        <input type="text" id="search" class="search-input" placeholder="Cari nama atau peran...">
+      </div>
+      <div id="memberList"></div>
+      <button class="btn ghost" id="seedBtn">Tambah Contoh</button>
+      <button class="btn ghost" id="clearBtn">Reset Data</button>
+    </section>
+
+    <section id="add" class="card" style="display:none">
+      <h3>Tambah Anggota</h3>
+      <label>Nama</label><input id="name" type="text" class="search-input" placeholder="Nama lengkap">
+      <label>Peran</label>
+      <select id="role" class="search-input">
+        <option>Dosen</option><option>Peneliti</option><option>Mahasiswa S1</option><option>Mahasiswa S2</option><option>Mahasiswa S3</option>
+      </select>
+      <label>Email</label><input id="email" type="email" class="search-input" placeholder="Email institusi">
+      <label>Bio</label><textarea id="bio" class="search-input" placeholder="Bidang riset, minat..."></textarea>
+      <label>Foto</label><input id="photo" type="file" accept="image/*">
+      <button class="btn primary" id="addBtn">Tambahkan</button>
+    </section>
+
+    <section id="research" class="card" style="display:none">
+      <h3>Penelitian</h3>
+      <p>Proyek utama: simulasi lubang hitam, material modeling, machine learning fisika.</p>
+      <div class="gallery" id="gallery" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px"></div>
+    </section>
+  </main>
+
+  <footer>© <span id="year"></span> Laboratorium Fisika Teori & Komputasi — Versi Keren 🎓</footer>
+  <div id="notice" class="notice">Data tersimpan!</div>
+  <div id="modal" class="modal"><img id="modalImg"></div>
+</div>
+
+<script>
+const qs=s=>document.querySelector(s),qsa=s=>document.querySelectorAll(s);
+let members=[],chartInstance;
+const STORAGE_KEY='labfh_members_v2';
+/* === Nav === */
+const navBtns=qsa('.navbtn');const sections=['about','members','add','research'];
+navBtns.forEach(b=>b.onclick=()=>{
+  navBtns.forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  sections.forEach(s=>qs('#'+s).style.display=(s===b.dataset.target)?'':'none');
+});
+/* === Theme Toggle === */
+const themeBtn=qs('#themeToggle');
+themeBtn.onclick=()=>{
+  const dark=document.body.dataset.theme==='dark';
+  document.body.dataset.theme=dark?'light':'dark';
+  themeBtn.textContent=dark?'🌙':'☀️';
+};
+/* === Storage === */
+function load(){try{members=JSON.parse(localStorage.getItem(STORAGE_KEY))||[]}catch{members=[]}}
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(members));render();showNotice();updateChart();}
+function showNotice(){const n=qs('#notice');n.classList.add('show');setTimeout(()=>n.classList.remove('show'),1500)}
+/* === Render === */
+function render(){
+  const list=qs('#memberList');list.innerHTML='';
+  const search=qs('#search').value.toLowerCase();
+  const filtered=members.filter(m=>m.name.toLowerCase().includes(search)||m.role.toLowerCase().includes(search));
+  if(filtered.length===0){list.innerHTML='<p style="color:var(--muted)">Belum ada data</p>';return;}
+  filtered.forEach((m,i)=>{
+    const c=document.createElement('div');c.className='member-card';
+    c.innerHTML=`<div class="member-info">
+      <img src="${m.photo||placeholder(m.name)}" class="avatar">
+      <div><strong>${m.name}</strong><br><small>${m.role}</small><br><small>${m.email||''}</small></div>
+    </div>
+    <button class="btn ghost" onclick="del(${i})">Hapus</button>`;
+    list.appendChild(c);
+  });
+}
+function placeholder(n){
+  const ini=(n||'?').split(' ').slice(0,2).map(x=>x[0]).join('');
+  return 'data:image/svg+xml;utf8,'+encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='100%' height='100%' fill='#E9DCC9'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Montserrat' font-size='48' fill='#8b6f59'>${ini}</text></svg>`);
+}
+function del(i){if(confirm('Hapus anggota ini?')){members.splice(i,1);save();}}
+qs('#addBtn').onclick=()=>{
+  const m={name:qs('#name').value,role:qs('#role').value,email:qs('#email').value,bio:qs('#bio').value};
+  const f=qs('#photo').files[0];
+  if(!m.name)return alert('Nama wajib diisi');
+  if(f){const r=new FileReader();r.onload=e=>{m.photo=e.target.result;members.push(m);save();};r.readAsDataURL(f);}
+  else{members.push(m);save();}
+  qs('#name').value=qs('#email').value=qs('#bio').value='';qs('#photo').value='';
+};
+qs('#seedBtn').onclick=()=>{
+  members=[{name:'Dr. Andi Pratama',role:'Dosen',email:'andi@unhas.ac.id'},
+           {name:'Siti Nurhayati',role:'Mahasiswa S2',email:'siti@unhas.ac.id'},
+           {name:'Rizky Firmansyah',role:'Mahasiswa S1',email:'rizky@unhas.ac.id'}];
+  save();
+};
+qs('#clearBtn').onclick=()=>{if(confirm('Hapus semua data?')){members=[];save();}};
+qs('#search').oninput=render;
+/* === Chart === */
+function updateChart(){
+  const ctx=qs('#roleChart');
+  const counts={};
+  members.forEach(m=>counts[m.role]=(counts[m.role]||0)+1);
+  const data={labels:Object.keys(counts),datasets:[{data:Object.values(counts),backgroundColor:['#D7BFA6','#E9DCC9','#F6EEE6','#C9A26B','#8b6f59']}]};
+  if(chartInstance)chartInstance.destroy();
+  chartInstance=new Chart(ctx,{type:'pie',data,options:{plugins:{legend:{position:'bottom'}}}});
+}
+/* === Gallery Modal === */
+const gallery=qs('#gallery');
+['simulasi1','visualisasi','material'].forEach((t,i)=>{
+  const img=document.createElement('img');
+  img.src=`https://picsum.photos/seed/${i+10}/400/300`;
+  img.alt=t;gallery.appendChild(img);
+  img.onclick=()=>{qs('#modalImg').src=img.src;qs('#modal').classList.add('show');};
+});
+qs('#modal').onclick=()=>qs('#modal').classList.remove('show');
+/* === Init === */
+(function(){
+  load();render();updateChart();
+  qs('#year').textContent=new Date().getFullYear();
+})();
+</script>
+</body>
+</html>
